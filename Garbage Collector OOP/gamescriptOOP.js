@@ -49,11 +49,11 @@ var imageRepository = new function() {
     };
 
     // Set images src
-    this.background.src = "images/matrixBG (2).jpg";
-    this.spaceship.src = "images/hero.jpg";
+    this.background.src = "images/background.jpg";
+    this.spaceship.src = "images/ship.png";
     this.bullet.src = "images/bullet.png";
-    this.enemy.src = "images/enemy.png";
-    this.enemyBullet.src = "images/bullet_enemy.png";
+    this.enemy.src = "images/baddie.png";
+    this.enemyBullet.src = "images/enemybullet.png";
 };
 
 /**
