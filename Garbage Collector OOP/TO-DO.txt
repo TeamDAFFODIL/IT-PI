@@ -1,0 +1,4 @@
+1) Fix Positiong with new sprites
+2) Lives/Score
+3) Game Over/Restart
+
