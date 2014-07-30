@@ -28,7 +28,25 @@
             font-family: Helvetica, sans-serif;
             cursor: default;
         }
-
+        .game-over {
+            position: absolute;
+            top: 250px;
+            left: 300px;
+            color: #FF7F00;
+            font-family: Helvetica, sans-serif;
+            font-size: 30px;
+            cursor: default;
+            display: none;
+        }
+        .game-over span {
+            font-size: 20px;
+            cursor: pointer;
+            position: relative;
+            left: 50px;
+        }
+        .game-over span:hover {
+            color: #FFD700;
+        }
     </style>
 
 </head>
@@ -45,6 +63,7 @@
 <canvas id="ship" width="800" height="600">
 </canvas>
 <div class="score">SCORE: <span id="score"></span></div>
+<div class="game-over" id="game-over">GAME OVER<p><span onclick="game.restart()">Restart</span></p></div>
 <script src="gamescriptOOP.js"></script>
 </body>
 </html>

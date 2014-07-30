@@ -3,9 +3,11 @@
  */
 
 var game = new Game();
+
 function init() {
-    if(game.init())
+    if(game.init()) {
         game.start();
+    }
 }
 
 
@@ -440,27 +442,37 @@ function Pool(maxSize) {
 function Ship() {
     this.speed = 3;
     this.bulletPool = new Pool(30);
-    this.bulletPool.init("bullet");
-    var fireRate = 9;
+    var fireRate = 15;
     var counter = 0;
     this.collidableWith = "enemyBullet";
     this.type = "ship";
-    this.draw = function() {
+
+    this.init = function (x, y, width, height) {
+        // Defualt variables
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+        this.alive = true;
+        this.isColliding = false;
+        this.bulletPool.init("bullet");
+    };
+
+    this.draw = function () {
         this.context.drawImage(imageRepository.spaceship, this.x, this.y);
     };
-    this.move = function() {
+    this.move = function () {
         counter++;
         // Determine if the action is move action
-        if (KEY_STATUS.left || KEY_STATUS.right ||
-            KEY_STATUS.down || KEY_STATUS.up) {
-            // The ship moved, so erase it's current image so it can
-            // be redrawn in it's new location
+        if (KEY_STATUS.left || KEY_STATUS.right || KEY_STATUS.down || KEY_STATUS.up) {
+            //The ship moved, so erase it's current image so it can be redrawn in it's new location
             this.context.clearRect(this.x, this.y, this.width, this.height);
+
             // Update x and y according to the direction to move and
             // redraw the ship.
             if (KEY_STATUS.left) {
                 this.x -= this.speed;
-                if (this.x <= 0) { // Keep player within the screen
+                if (this.x <= 0) { //keep player within the screen
                     this.x = 0;
                 }
             }
@@ -482,26 +494,31 @@ function Ship() {
                     this.y = this.canvasHeight - this.height;
                 }
             }
-            // Finish by redrawing the ship
-            if (!this.isColliding) {
-                this.draw();
-            }
-          }
-           if (KEY_STATUS.space && counter >= fireRate && !this.isColliding) {
-             this.fire();
-              counter = 0;
         }
 
-    };
-    /*
-     * Fires two bullets
-     */
-    this.fire = function() {
-        this.bulletPool.getTwo(this.x+6, this.y, 3,
-                this.x+33, this.y, 3);
-    };
-}
+        // Redraw the ship
+        if (!this.isColliding) {
+            this.draw();
+        } else {
+            this.alive = false;
+            game.gameOver();
+        }
 
+
+        if (KEY_STATUS.space && counter >= fireRate && !this.isColliding) {
+            this.fire();
+            counter = 0;
+        }
+
+        /*
+         * Fires two bullets
+         */
+        this.fire = function () {
+            this.bulletPool.getTwo(this.x + 6, this.y, 3,
+                    this.x + 33, this.y, 3);
+        }
+    }
+}
 Ship.prototype = new Drawable();
 
 /**
@@ -638,6 +655,7 @@ function Game() {
             this.spawnWave();
             this.enemyBulletPool = new Pool(50);
             this.enemyBulletPool.init("enemyBullet");
+
             // Start QuadTree
             this.quadTree = new QuadTree({x:0,y:0,width:this.mainCanvas.width,height:this.mainCanvas.height});
             return true;
@@ -661,6 +679,26 @@ function Game() {
             }
         }
     };
+    // Game over
+    this.gameOver = function() {
+        document.getElementById('game-over').style.display = "block";
+    };
+    // Restart the game
+    this.restart = function() {
+        document.getElementById('game-over').style.display = "none";
+        this.bgContext.clearRect(0, 0, this.bgCanvas.width, this.bgCanvas.height);
+        this.shipContext.clearRect(0, 0, this.shipCanvas.width, this.shipCanvas.height);
+        this.mainContext.clearRect(0, 0, this.mainCanvas.width, this.mainCanvas.height);
+        this.quadTree.clear();
+        this.background.init(0,0);
+        this.ship.init(this.shipCanvas.width/2 - imageRepository.spaceship.width, this.shipCanvas.height/4*3 + imageRepository.spaceship.height*2,
+            imageRepository.spaceship.width, imageRepository.spaceship.height);
+        this.enemyPool.init("enemy");
+        this.spawnWave();
+        this.enemyBulletPool.init("enemyBullet");
+        this.playerScore = 0;
+        this.start();
+    };
     // Start the animation loop
     this.start = function() {
         this.ship.draw();
@@ -676,6 +714,8 @@ function Game() {
  * object.
  */
 function animate() {
+    document.getElementById('score').innerHTML = game.playerScore;
+
     // Insert objects into quadtree
     game.quadTree.clear();
     game.quadTree.insert(game.ship);
@@ -691,13 +731,16 @@ function animate() {
     }
 
     // Animate game objects
-    requestAnimFrame( animate );
-    document.getElementById('score').innerHTML = game.playerScore;
-    game.background.draw();
-    game.ship.move();
-    game.ship.bulletPool.animate();
-    game.enemyPool.animate();
-    game.enemyBulletPool.animate();
+    if (game.ship.alive) {
+        requestAnimFrame( animate );
+
+        game.background.draw();
+        game.ship.move();
+        game.ship.bulletPool.animate();
+        game.enemyPool.animate();
+        game.enemyBulletPool.animate();
+    }
+
 }
 
 // Collision Detection
