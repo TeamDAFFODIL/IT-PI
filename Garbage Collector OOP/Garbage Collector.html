@@ -20,6 +20,15 @@
         #ship {
             z-index: 0;
         }
+        .score {
+            position: absolute;
+            top: 5px;
+            left: 680px;
+            color: #FF7F00;
+            font-family: Helvetica, sans-serif;
+            cursor: default;
+        }
+
     </style>
 
 </head>
@@ -35,6 +44,7 @@
  one forth the screen.) -->
 <canvas id="ship" width="800" height="600">
 </canvas>
+<div class="score">SCORE: <span id="score"></span></div>
 <script src="gamescriptOOP.js"></script>
 </body>
 </html>
