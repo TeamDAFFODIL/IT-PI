@@ -557,6 +557,7 @@ function Enemy() {
             return false;
         }
         else {
+            game.playerScore += 10;
             return true;
         }
     };
@@ -620,7 +621,7 @@ function Game() {
             Enemy.prototype.context = this.mainContext;
             Enemy.prototype.canvasWidth = this.mainCanvas.width;
             Enemy.prototype.canvasHeight = this.mainCanvas.height;
-			// Initialize score
+            // Initialize score
             this.playerScore = 0;
             // Initialize the background object
             this.background = new Background();
@@ -653,7 +654,6 @@ function Game() {
             this.quadTree = new QuadTree({x:0,y:0,width:this.mainCanvas.width,height:this.mainCanvas.height});
             return true;
         } else {
-		    game.playerScore += 10;
             return false;
         }
     };
@@ -683,7 +683,7 @@ function animate() {
 
     // Animate game objects
     requestAnimFrame( animate );
-	document.getElementById('score').innerHTML = game.playerScore;
+    document.getElementById('score').innerHTML = game.playerScore;
     game.background.draw();
     game.ship.move();
     game.ship.bulletPool.animate();
