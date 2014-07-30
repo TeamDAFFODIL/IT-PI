@@ -525,7 +525,7 @@ function Enemy() {
         this.speedY = speed;
         this.alive = true;
         this.leftEdge = this.x - 90;
-        this.rightEdge = this.x-30;
+        this.rightEdge = this.x + 180;
         this.bottomEdge = this.y + 150;
     };
     /*
@@ -635,19 +635,7 @@ function Game() {
             // Initialize the enemy pool object
             this.enemyPool = new Pool(30);
             this.enemyPool.init("enemy");
-            var height = imageRepository.enemy.height;
-            var width = imageRepository.enemy.width;
-            var x = 100;
-            var y = -height;
-            var spacer = y * 1.5;
-            for (var i = 1; i <= 18; i++) {
-                this.enemyPool.get(x,y,2);
-                x += width + 25;
-                if (i % 6 == 0) {
-                    x = 100;
-                    y += spacer
-                }
-            }
+            this.spawnWave();
             this.enemyBulletPool = new Pool(50);
             this.enemyBulletPool.init("enemyBullet");
             // Start QuadTree
@@ -655,6 +643,22 @@ function Game() {
             return true;
         } else {
             return false;
+        }
+    };
+
+    this.spawnWave = function() {
+        var height = imageRepository.enemy.height;
+        var width = imageRepository.enemy.width;
+        var x = 100;
+        var y = -height;
+        var spacer = y * 1.5;
+        for (var i = 1; i <= 18; i++) {
+            this.enemyPool.get(x, y, 2);
+            x += width + 25;
+            if (i % 6 == 0) {
+                x = 100;
+                y += spacer
+            }
         }
     };
     // Start the animation loop
@@ -680,6 +684,11 @@ function animate() {
     game.quadTree.insert(game.enemyBulletPool.getPool());
 
     detectCollision();
+
+    // No more enemies
+    if (game.enemyPool.getPool().length === 0) {
+        game.spawnWave();
+    }
 
     // Animate game objects
     requestAnimFrame( animate );
