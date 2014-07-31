@@ -24,6 +24,7 @@ var imageRepository = new function() {
     this.bullet = new Image();
     this.enemy = new Image();
     this.enemyBullet = new Image();
+	
 
     // Ensure all images have loaded before starting the game
     var numImages = 5;
@@ -56,6 +57,7 @@ var imageRepository = new function() {
     this.bullet.src = "images/bullet.png";
     this.enemy.src = "images/baddie.png";
     this.enemyBullet.src = "images/enemybullet.png";
+	
 };
 
 /**
@@ -94,6 +96,12 @@ function Drawable() {
  * the Drawable object. The background is drawn on the "background"
  * canvas and creates the illusion of moving by panning the image.
  */
+var snd = new Audio();
+var shot = new Audio();
+var explode = new Audio();
+snd.src = "sounds/sonar.mp3";
+shot.src = "sounds/shot.wav";
+explode.src = "sounds/explode.wav";
 
 function Background() {
     this.speed = 1; // Redefine speed of the background for panning
@@ -112,6 +120,13 @@ function Background() {
 
 // Set Background to inherit properties from Drawable
 Background.prototype = new Drawable();
+snd.play();		
+// add listener function to loop on end
+snd.addEventListener("ended", loop, false);
+
+function loop() {
+	snd.play();
+}	
 
 /**
  * Creates the Bullet object which the ship fires. The bullets are
@@ -502,6 +517,7 @@ function Ship() {
         } else {
             this.alive = false;
             game.gameOver();
+			snd.pause();
         }
 
 
@@ -516,6 +532,7 @@ function Ship() {
         this.fire = function () {
             this.bulletPool.getTwo(this.x + 6, this.y, 3,
                     this.x + 33, this.y, 3);
+			shot.play();
         }
     }
 }
@@ -583,6 +600,7 @@ function Enemy() {
      */
     this.fire = function() {
         game.enemyBulletPool.get(this.x+this.width/2, this.y+this.height, -2.5);
+		
     };
     /*
      * Resets the enemy values
@@ -655,7 +673,8 @@ function Game() {
             this.spawnWave();
             this.enemyBulletPool = new Pool(50);
             this.enemyBulletPool.init("enemyBullet");
-
+			
+			//snd.play();
             // Start QuadTree
             this.quadTree = new QuadTree({x:0,y:0,width:this.mainCanvas.width,height:this.mainCanvas.height});
             return true;
@@ -697,6 +716,7 @@ function Game() {
         this.spawnWave();
         this.enemyBulletPool.init("enemyBullet");
         this.playerScore = 0;
+		snd.play();
         this.start();
     };
     // Start the animation loop
@@ -707,6 +727,7 @@ function Game() {
     };
 }
 
+	
 /**
  * The animation loop. Calls the requestAnimationFrame shim to
  * optimize the game loop and draws all game objects. This
@@ -758,10 +779,18 @@ function detectCollision() {
                     objects[x].y + objects[x].height > obj[y].y)) {
                 objects[x].isColliding = true;
                 obj[y].isColliding = true;
+				explode.play();
             }
         }
     }
 }
+
+		
+			//function loop() {
+			//	snd.play();
+			//}			
+			// add listener function to loop on end
+            //snd.addEventListener("ended", loop, false);
 
 // The keycodes that will be mapped when a user presses a button.
 // Original code by Doug McInnes
@@ -825,5 +854,7 @@ window.requestAnimFrame = (function(){
             window.setTimeout(callback, 1000 / 60);
         };
 })();
+
+
 
 
