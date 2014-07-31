@@ -52,7 +52,7 @@ var imageRepository = new function() {
     };
 
     // Set images src
-    this.background.src = "images/background.jpg";
+    this.background.src = "images/new_background.png";
     this.spaceship.src = "images/ship.png";
     this.bullet.src = "images/bullet.png";
     this.enemy.src = "images/baddie.png";
@@ -558,7 +558,7 @@ function Enemy() {
         this.speedX = 0;
         this.speedY = speed;
         this.alive = true;
-        this.leftEdge = this.x - 10;
+        this.leftEdge = this.x - 90;
         this.rightEdge = this.x + 180;
         this.bottomEdge = this.y + 150;
     };
