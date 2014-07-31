@@ -1,0 +1,64 @@
+<html>
+<head>
+	<style>
+		body { margin: 40px 120px; background: #4C5DA3;}		
+		#my_canvas { background: #FFF; border: 5px solid #111518; border-radius: 20px;}
+		button { text-align: center; border-radius: 6px; margin-top: 10px;}
+		button a { color: #4C5DAF; text-decoration: none; font-size: 20px; font-weight: bold;}
+	</style>
+	<script>
+		var bg = new Image();
+		bg.src = "images/textStars.png";
+		var sd = new Audio('sounds/bgSound.mp3');
+
+		function initCanvas () {
+			var ctx = document.getElementById('my_canvas').getContext('2d');
+			var cW = ctx.canvas.width, 
+				cH = ctx.canvas.height;
+			
+			function Background () {
+				this.x = 0, this.y = -900, this.w = bg.width, this.h = bg.height;
+				this.render = function () {
+					ctx.drawImage(bg, 0, this.y++);
+					if (this.y >= -50) {
+						this.y = -900;
+					}
+				}
+			}			
+
+			var backrg = new Background();
+			
+			sd.play();			
+			function loop() {
+				sd.play();
+			}			
+			// add listener function to loop on end
+            sd.addEventListener("ended", loop, false);
+
+			function animate () {
+				ctx.save();
+				ctx.clearRect(0, 0, cW, cH);				
+				// Draw here
+				backrg.render();
+				ctx.drawImage(ship, (cW/2) - ship.width, cH - ship.height - 10);
+				ctx.drawImage(enemy, (cW/2) - enemy.width, ship.height - 10);
+				ctx.restore();
+			}
+			var animateInterval = setInterval(animate, 60);
+
+		}
+
+		window.addEventListener('load', function (event) {
+			initCanvas();
+		});	
+	</script>
+</head>
+
+<body>
+	
+	<canvas id="my_canvas" width="1000" height="550"></canvas>
+	
+	<!--<audio id="soundEfx" src="bgS.mp3" style="display: none;"></audio> -->
+	<button><a href="Garbage Collector.html">See Special News</a></button>
+</body>
+</html>
