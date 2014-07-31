@@ -558,7 +558,7 @@ function Enemy() {
         this.speedX = 0;
         this.speedY = speed;
         this.alive = true;
-        this.leftEdge = this.x - 90;
+        this.leftEdge = this.x - 10;
         this.rightEdge = this.x + 180;
         this.bottomEdge = this.y + 150;
     };
